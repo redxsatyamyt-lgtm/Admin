@@ -3,128 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CraftHub - Admin Panel</title>
+    <title>CraftHub Admin Panel</title>
     <style>
+        :root {
+            --bg-dark: #0a0c10;
+            --card-bg: #161b22;
+            --primary: #2ea043;
+            --primary-hover: #3fb950;
+            --danger: #da3633;
+            --text: #f0f6fc;
+            --text-dim: #8b949e;
+            --border: #30363d;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #0b0e14;
-            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text);
+            margin: 0;
             padding: 20px;
-            display: flex;
-            justify-content: center;
         }
-        .admin-card {
-            background: rgba(20, 26, 38, 0.9);
-            padding: 25px;
-            border-radius: 12px;
-            border: 1px solid #55FF55;
-            width: 100%;
-            max-width: 500px;
+
+        .admin-container {
+            max-width: 900px;
+            margin: 0 auto;
         }
-        h2 { color: #55FF55; text-align: center; margin-bottom: 20px; }
-        label { font-size: 0.85rem; color: #a0aabe; display: block; margin-top: 10px; }
+
+        h1, h2 {
+            text-align: center;
+            color: var(--primary-hover);
+        }
+
+        .form-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: var(--text-dim);
+        }
+
         input, select, textarea {
             width: 100%;
             padding: 10px;
-            margin-top: 5px;
-            background: #12161f;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #fff;
-            border-radius: 6px;
+            background: #0d1117;
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: 5px;
+            box-sizing: border-box;
         }
+
         button {
             width: 100%;
             padding: 12px;
-            background: #55FF55;
-            color: #000;
-            font-weight: bold;
+            background: var(--primary);
+            color: white;
             border: none;
-            border-radius: 6px;
-            margin-top: 20px;
+            border-radius: 5px;
+            font-weight: bold;
             cursor: pointer;
+            font-size: 16px;
         }
-        button:hover { background: #44cc44; }
-        #status { margin-top: 15px; text-align: center; font-weight: bold; }
+
+        button:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-cancel {
+            background: #30363d;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* Filter Tabs */
+        .tabs-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            padding: 10px 15px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            border-radius: 5px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Mods List Grid */
+        .mods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .mod-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 15px;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .badge-tag {
+            font-size: 11px;
+            padding: 2px 6px;
+            background: #21262d;
+            color: var(--primary-hover);
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-edit {
+            background: #1f6feb;
+            padding: 6px 10px;
+            font-size: 14px;
+        }
+
+        .btn-delete {
+            background: var(--danger);
+            padding: 6px 10px;
+            font-size: 14px;
+        }
+
+        .btn-delete:hover {
+            background: #f85149;
+        }
     </style>
 </head>
 <body>
 
-<div class="admin-card">
-    <h2>🛠️ CraftHub Admin Panel</h2>
-    
-    <label>Title (Name of Mod/Tool)</label>
-    <input type="text" id="title" placeholder="e.g., Sodium FPS Booster">
+<div class="admin-container">
+    <h1>🛠️ CraftHub Admin Panel</h1>
 
-    <label>Category (Where to show?)</label>
-    <select id="section">
-        <option value="creators">For YouTubers / Creators</option>
-        <option value="players">For Competitive Players</option>
-    </select>
+    <!-- FORM SECTION -->
+    <div class="form-card">
+        <h2 id="form-title">➕ Add New Item</h2>
+        <form id="mod-form">
+            <input type="hidden" id="edit-doc-id">
 
-    <label>Badge Type</label>
-    <select id="badge">
-        <option value="badge-mod">Mod</option>
-        <option value="badge-tool">Tool</option>
-        <option value="badge-resource">Resource Pack</option>
-        <option value="badge-perf">Performance</option>
-        <option value="badge-pvp">PvP</option>
-    </select>
+            <div class="input-group">
+                <label>Title</label>
+                <input type="text" id="title" placeholder="e.g. Sodium FPS Booster" required>
+            </div>
 
-    <label>Description</label>
-    <textarea id="desc" rows="3" placeholder="Short detail about it..."></textarea>
+            <div class="input-group">
+                <label>Category (Target Section)</label>
+                <select id="section" required>
+                    <option value="creators">For Content Creators</option>
+                    <option value="players">For Competitive Players</option>
+                    <option value="downloads">Top Downloads Table</option>
+                </select>
+            </div>
 
-    <label>Download URL</label>
-    <input type="text" id="link" placeholder="https://modrinth.com/...">
+            <div class="input-group">
+                <label>Badge Type</label>
+                <select id="badge" required>
+                    <option value="badge-mod">MOD</option>
+                    <option value="badge-tool">TOOL</option>
+                    <option value="badge-resource">RESOURCE</option>
+                    <option value="badge-perf">PERF</option>
+                    <option value="badge-pvp">PVP</option>
+                </select>
+            </div>
 
-    <button onclick="uploadContent()">🚀 Publish to Website</button>
-    <div id="status"></div>
+            <div class="input-group">
+                <label>Description</label>
+                <textarea id="desc" rows="3" placeholder="Short description..." required></textarea>
+            </div>
+
+            <div class="input-group">
+                <label>Download Link (Direct / MediaFire / Drive URL)</label>
+                <input type="url" id="link" placeholder="https://mediafire.com/..." required>
+            </div>
+
+            <button type="submit" id="submit-btn">🚀 Publish to Website</button>
+            <button type="button" class="btn-cancel" id="cancel-btn" onclick="resetForm()">❌ Cancel Edit</button>
+        </form>
+    </div>
+
+    <!-- TABS SECTION -->
+    <h2>📋 Manage Published Items</h2>
+    <div class="tabs-nav">
+        <button class="tab-btn active" onclick="filterCategory('all', this)">All Items</button>
+        <button class="tab-btn" onclick="filterCategory('creators', this)">Creators Section</button>
+        <button class="tab-btn" onclick="filterCategory('players', this)">Players Section</button>
+        <button class="tab-btn" onclick="filterCategory('downloads', this)">Top Downloads</button>
+    </div>
+
+    <!-- MODS LIST DISPLAY -->
+    <div class="mods-grid" id="admin-mods-list">
+        <p style="text-align: center; grid-column: 1/-1;">Loading items...</p>
+    </div>
 </div>
 
-<script type="module" src="firebase.js"></script>
-
-<script>
-async function uploadContent() {
-    const status = document.getElementById("status");
-    status.style.color = "#FFAA00";
-    status.innerText = "Publishing...";
-
-    const title = document.getElementById("title").value;
-    const section = document.getElementById("section").value;
-    const badge = document.getElementById("badge").value;
-    const desc = document.getElementById("desc").value;
-    const link = document.getElementById("link").value;
-
-    if(!title || !desc || !link) {
-        status.style.color = "#FF5555";
-        status.innerText = "❌ Please fill all fields!";
-        return;
-    }
-
-    try {
-        await window.addDoc(window.collection(window.db, "mods_data"), {
-            title: title,
-            section: section,
-            badge: badge,
-            desc: desc,
-            link: link,
-            createdAt: new Date()
-        });
-
-        status.style.color = "#55FF55";
-        status.innerText = "✅ Successfully Published to Site!";
-        
-        // Clear inputs
-        document.getElementById("title").value = "";
-        document.getElementById("desc").value = "";
-        document.getElementById("link").value = "";
-    } catch (e) {
-        console.error(e);
-        status.style.color = "#FF5555";
-        status.innerText = "❌ Error uploading data!";
-    }
-}
-</script>
-
+<script type="module" src="script.js"></script>
 </body>
 </html>
-
