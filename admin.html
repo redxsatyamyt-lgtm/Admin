@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CraftHub - Admin Panel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #0b0e14;
+            color: #fff;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .admin-card {
+            background: rgba(20, 26, 38, 0.9);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #55FF55;
+            width: 100%;
+            max-width: 500px;
+        }
+        h2 { color: #55FF55; text-align: center; margin-bottom: 20px; }
+        label { font-size: 0.85rem; color: #a0aabe; display: block; margin-top: 10px; }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            background: #12161f;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border-radius: 6px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #55FF55;
+            color: #000;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+        button:hover { background: #44cc44; }
+        #status { margin-top: 15px; text-align: center; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="admin-card">
+    <h2>🛠️ CraftHub Admin Panel</h2>
+    
+    <label>Title (Name of Mod/Tool)</label>
+    <input type="text" id="title" placeholder="e.g., Sodium FPS Booster">
+
+    <label>Category (Where to show?)</label>
+    <select id="section">
+        <option value="creators">For YouTubers / Creators</option>
+        <option value="players">For Competitive Players</option>
+    </select>
+
+    <label>Badge Type</label>
+    <select id="badge">
+        <option value="badge-mod">Mod</option>
+        <option value="badge-tool">Tool</option>
+        <option value="badge-resource">Resource Pack</option>
+        <option value="badge-perf">Performance</option>
+        <option value="badge-pvp">PvP</option>
+    </select>
+
+    <label>Description</label>
+    <textarea id="desc" rows="3" placeholder="Short detail about it..."></textarea>
+
+    <label>Download URL</label>
+    <input type="text" id="link" placeholder="https://modrinth.com/...">
+
+    <button onclick="uploadContent()">🚀 Publish to Website</button>
+    <div id="status"></div>
+</div>
+
+<script type="module" src="firebase.js"></script>
+
+<script>
+async function uploadContent() {
+    const status = document.getElementById("status");
+    status.style.color = "#FFAA00";
+    status.innerText = "Publishing...";
+
+    const title = document.getElementById("title").value;
+    const section = document.getElementById("section").value;
+    const badge = document.getElementById("badge").value;
+    const desc = document.getElementById("desc").value;
+    const link = document.getElementById("link").value;
+
+    if(!title || !desc || !link) {
+        status.style.color = "#FF5555";
+        status.innerText = "❌ Please fill all fields!";
+        return;
+    }
+
+    try {
+        await window.addDoc(window.collection(window.db, "mods_data"), {
+            title: title,
+            section: section,
+            badge: badge,
+            desc: desc,
+            link: link,
+            createdAt: new Date()
+        });
+
+        status.style.color = "#55FF55";
+        status.innerText = "✅ Successfully Published to Site!";
+        
+        // Clear inputs
+        document.getElementById("title").value = "";
+        document.getElementById("desc").value = "";
+        document.getElementById("link").value = "";
+    } catch (e) {
+        console.error(e);
+        status.style.color = "#FF5555";
+        status.innerText = "❌ Error uploading data!";
+    }
+}
+</script>
+
+</body>
+</html>
+
