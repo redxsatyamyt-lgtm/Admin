@@ -38,12 +38,15 @@ function fetchAdminMods() {
             allModsData.push({ id: docSnap.id, ...docSnap.data() });
         });
         renderAdminList();
+    }, (err) => {
+        console.error("Error fetching items:", err);
     });
 }
 
 // Render Admin Items Grid
 function renderAdminList() {
     const container = document.getElementById("admin-mods-list");
+    if (!container) return;
     container.innerHTML = "";
 
     const filtered = currentCategory === 'all' 
@@ -58,9 +61,17 @@ function renderAdminList() {
     filtered.forEach((item) => {
         const itemCard = document.createElement("div");
         itemCard.className = "mod-item";
+        
+        // Pretty Category Display Text
+        let sectionName = item.section;
+        if (item.section === "home") sectionName = "Home Page";
+        else if (item.section === "creators") sectionName = "Creators";
+        else if (item.section === "players") sectionName = "Players";
+        else if (item.section === "tools") sectionName = "Useful Tools";
+
         itemCard.innerHTML = `
             <span class="badge-tag">${item.badge || 'MOD'}</span> | 
-            <small style="color: #8b949e;">${item.section}</small>
+            <small style="color: #8b949e;">${sectionName}</small>
             <h3 style="margin: 10px 0 5px 0;">${item.title}</h3>
             <p style="font-size: 13px; color: #8b949e; margin-bottom: 10px;">${item.desc}</p>
             <div class="actions">
@@ -76,7 +87,7 @@ function renderAdminList() {
 window.filterCategory = function(cat, btnElement) {
     currentCategory = cat;
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    btnElement.classList.add('active');
+    if (btnElement) btnElement.classList.add('active');
     renderAdminList();
 };
 
