@@ -175,9 +175,10 @@
             <div class="input-group">
                 <label>Category (Target Section)</label>
                 <select id="section" required>
+                    <option value="home">Home Page (Featured)</option>
                     <option value="creators">For Content Creators</option>
                     <option value="players">For Competitive Players</option>
-                    <option value="downloads">Top Downloads Table</option>
+                    <option value="tools">Useful Tools Section</option>
                 </select>
             </div>
 
@@ -186,8 +187,8 @@
                 <select id="badge" required>
                     <option value="badge-mod">MOD</option>
                     <option value="badge-tool">TOOL</option>
-                    <option value="badge-resource">RESOURCE</option>
-                    <option value="badge-perf">PERF</option>
+                    <option value="badge-resource">RESOURCE / PACK</option>
+                    <option value="badge-perf">PERFORMANCE</option>
                     <option value="badge-pvp">PVP</option>
                 </select>
             </div>
@@ -211,9 +212,10 @@
     <h2>📋 Manage Published Items</h2>
     <div class="tabs-nav">
         <button class="tab-btn active" onclick="filterCategory('all', this)">All Items</button>
+        <button class="tab-btn" onclick="filterCategory('home', this)">Home Page</button>
         <button class="tab-btn" onclick="filterCategory('creators', this)">Creators Section</button>
         <button class="tab-btn" onclick="filterCategory('players', this)">Players Section</button>
-        <button class="tab-btn" onclick="filterCategory('downloads', this)">Top Downloads</button>
+        <button class="tab-btn" onclick="filterCategory('tools', this)">Useful Tools</button>
     </div>
 
     <!-- MODS LIST DISPLAY -->
