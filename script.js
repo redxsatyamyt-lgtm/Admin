@@ -68,12 +68,14 @@ function renderAdminList() {
         else if (item.section === "creators") sectionName = "Creators";
         else if (item.section === "players") sectionName = "Players";
         else if (item.section === "tools") sectionName = "Useful Tools";
+        else if (item.section === "ads") sectionName = "Promotions & Ads";
 
         itemCard.innerHTML = `
             <span class="badge-tag">${item.badge || 'MOD'}</span> | 
             <small style="color: #8b949e;">${sectionName}</small>
             <h3 style="margin: 10px 0 5px 0;">${item.title}</h3>
-            <p style="font-size: 13px; color: #8b949e; margin-bottom: 10px;">${item.desc}</p>
+            <p style="font-size: 13px; color: #8b949e; margin-bottom: 5px;">${item.desc}</p>
+            <small style="color: #3fb950; display: block; margin-bottom: 10px;">Button Label: "${item.btnText || 'Download →'}"</small>
             <div class="actions">
                 <button class="btn-edit" onclick="startEdit('${item.id}')">✏️ Edit</button>
                 <button class="btn-delete" onclick="deleteItem('${item.id}')">🗑️ Delete</button>
@@ -100,6 +102,7 @@ modForm.addEventListener("submit", async (e) => {
     const badge = document.getElementById("badge").value;
     const desc = document.getElementById("desc").value;
     const link = document.getElementById("link").value;
+    const btnText = document.getElementById("btnText").value || "Download →";
     const docId = editDocIdInput.value;
 
     submitBtn.innerText = "Saving...";
@@ -109,12 +112,12 @@ modForm.addEventListener("submit", async (e) => {
         if (docId) {
             // UPDATE EXISTING ITEM
             const docRef = doc(db, "mods_data", docId);
-            await updateDoc(docRef, { title, section, badge, desc, link });
+            await updateDoc(docRef, { title, section, badge, desc, link, btnText });
             alert("✅ Item Updated Successfully!");
         } else {
             // ADD NEW ITEM
             await addDoc(collection(db, "mods_data"), {
-                title, section, badge, desc, link,
+                title, section, badge, desc, link, btnText,
                 createdAt: serverTimestamp()
             });
             alert("🚀 Item Published Successfully!");
@@ -138,6 +141,7 @@ window.startEdit = function(id) {
     document.getElementById("badge").value = item.badge || "badge-mod";
     document.getElementById("desc").value = item.desc;
     document.getElementById("link").value = item.link;
+    document.getElementById("btnText").value = item.btnText || "Download →";
 
     formTitle.innerText = "✏️ Edit Item";
     submitBtn.innerText = "💾 Save Changes";
@@ -149,6 +153,9 @@ window.startEdit = function(id) {
 window.resetForm = function() {
     modForm.reset();
     editDocIdInput.value = "";
+    if (document.getElementById("btnText")) {
+        document.getElementById("btnText").value = "";
+    }
     formTitle.innerText = "➕ Add New Item";
     submitBtn.innerText = "🚀 Publish to Website";
     cancelBtn.style.display = "none";
