@@ -179,6 +179,7 @@
                     <option value="creators">For Content Creators</option>
                     <option value="players">For Competitive Players</option>
                     <option value="tools">Useful Tools Section</option>
+                    <option value="ads">📢 Promotions & Ads</option>
                 </select>
             </div>
 
@@ -201,6 +202,17 @@
             <div class="input-group">
                 <label>Download Link (Direct / MediaFire / Drive URL)</label>
                 <input type="url" id="link" placeholder="https://mediafire.com/..." required>
+            </div>
+            <div class="input-group">
+                <label>Button Text / Label (Jo card par dikhega)</label>
+                <input type="text" id="btnText" placeholder="e.g. Download →, Visit Site 🔗, Explore →" list="btn-suggestions" required>
+                <datalist id="btn-suggestions">
+                    <option value="Download →">
+                    <option value="Visit Website 🔗">
+                    <option value="Explore Pack →">
+                    <option value="Join Server 🌐">
+                    <option value="Contact Admin 💬">
+                </datalist>
             </div>
 
             <button type="submit" id="submit-btn">🚀 Publish to Website</button>
